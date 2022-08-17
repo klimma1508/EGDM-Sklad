@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    
+    <link rel="stylesheet" href="style.css">
+
+    
+    <script  type="text/javascript">
+        function modify_data(){
+
+            // Creating the XMLHttpRequest object
+            var request = new XMLHttpRequest();
+
+            // Instantiating the request object
+            var req = "update_data.php";
+            request.open("POST", req);
+
+            // Defining event listener for readystatechange event
+            request.onreadystatechange = function() {
+                // Check if the request is compete and was successful
+                if(this.readyState === 4 && this.status === 200) {
+                    // Inserting the response from server into an HTML element
+                    search();
+                }
+            };
+
+
+
+            // Retrieving the form data
+            var myForm = document.getElementById("myForm");
+            var formData = new FormData(myForm);
+
+            // Sending the request to the server
+            request.send(formData);
+
+        }
+
+
+        function remove_data(){
+
+            // Creating the XMLHttpRequest object
+            var request = new XMLHttpRequest();
+
+            // Instantiating the request object
+            var req = "remove_data.php";
+            request.open("POST", req);
+
+            // Defining event listener for readystatechange event
+            request.onreadystatechange = function() {
+                // Check if the request is compete and was successful
+                if(this.readyState === 4 && this.status === 200) {
+                    // Inserting the response from server into an HTML element
+                    search();
+                }
+            };
+
+
+
+            // Retrieving the form data
+            var myForm = document.getElementById("myForm");
+            var formData = new FormData(myForm);
+
+            // Sending the request to the server
+            request.send(formData);
+        }
+        
+
+        function tableloaded(){
+
+            try{
+                var table = document.getElementById('table');
+                var rIndex
+                for(var i = 1; i < table.rows.length; i++)
+                {
+                    table.rows[i].onclick = function()
+                    {
+                        document.forms['myForm']['ID'].value = this.cells[0].innerHTML;
+                        document.forms['myForm']['SKLAD'].value = this.cells[2].innerHTML;
+                        document.forms['myForm']['Name'].value = this.cells[1].innerHTML;
+                        document.forms['myForm']['PCS'].value = this.cells[3].innerHTML;
+                        document.forms['myForm']['MinPCS'].value = this.cells[4].innerHTML;
+                    };
+                }
+            }
+
+            catch (error) {
+                
+            }
+        }
+
+        function search() {
+
+        // Creating the XMLHttpRequest object
+        var request = new XMLHttpRequest();
+
+        // Instantiating the request object
+        var req = "search.php";
+        request.open("POST", req);
+
+        // Defining event listener for readystatechange event
+        request.onreadystatechange = function() {
+            // Check if the request is compete and was successful
+            if(this.readyState === 4 && this.status === 200) {
+                // Inserting the response from server into an HTML element
+                document.getElementById("sklad_res").innerHTML = this.responseText;
+                tableloaded();
+            }
+        };
+
+
+
+        var e = document.getElementById("results");
+        var strUser = e.value;
+
+        // Retrieving the form data
+        var myForm = document.getElementById("search");
+        var formData = new FormData(myForm);
+        formData.append("res_on_page", strUser);
+
+        // Sending the request to the server
+        request.send(formData);
+        }
+
+        function send_data() {
+
+            var myForm = document.getElementById("myForm");
+            var formData = new FormData(myForm);
+
+
+            // Creating the XMLHttpRequest object
+            var request = new XMLHttpRequest();
+            
+            // Instantiating the request object
+            var req = "senddata.php";
+            request.open("POST", req);
+            
+            // Defining event listener for readystatechange event
+            request.onreadystatechange = function() {
+                // Check if the request is compete and was successful
+                if(this.readyState === 4 && this.status === 200) {
+                    // Inserting the response from server into an HTML element
+                    document.getElementById("sklad_res").innerHTML = this.responseText;
+                    search();
+                }
+            };
+
+
+            
+
+            // Retrieving the form data
+            var myForm = document.getElementById("myForm");
+            var formData = new FormData(myForm);
+
+            // Sending the request to the server
+            request.send(formData);
+        }
+
+    </script>
+
+
+
+    <body onload="search()">
+        <br>
+
+
+        <form id="search">
+            <input onkeyup="search()" type="text" name="searchbar">
+            <button type="button" onclick="search()">HLEDEJ</button>
+        </form>
+
+        <br> <br> <br>
+
+        <form id="myForm">
+
+            <div>
+                <label>ID:</label>
+                <input type="text" name="ID">
+            </div>
+
+
+            <div>
+                <label>StorageID:</label>
+                <input type="text" name="SKLAD">
+            </div>
+
+            <br>
+
+            <div>
+                <label>Name:</label>
+                <input class="long"  type="text" name="Name">
+            </div>
+
+            <br>
+
+            <div>
+
+                <label>PCS:</label>
+                <input type="text" name="PCS">
+            </div>
+
+            <br>
+
+            <div>
+                <label>MinPCS:</label>
+                <input type="text" name="MinPCS">
+            </div>
+
+            <br>
+            
+            <button type="button" onclick="send_data()">NEW</button>
+            <button type="button" onclick="modify_data()">Edit</button>
+            <button type="button" onclick="remove_data()">Remove</button>
+        </form>    
+
+        <br> <br>
+        <select name="results on page" id="results">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="0">all</option>
+          </select>
+
+        
+
+
+        <div id="sklad">
+            <div id="sklad_res">
+                
+            </div>
+           
+        </div>
+
+
+    </body>
+</html>
